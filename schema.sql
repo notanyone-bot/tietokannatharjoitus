@@ -3,3 +3,10 @@ CREATE TABLE users (
     username TEXT UNIQUE,
     password_hash TEXT
 );
+CREATE TABLE varaukset (
+    id INTEGER PRIMARY KEY,
+    amount TEXT,
+    time INTEGER,
+    cat TEXT,
+    user_id INTEGER REFERENCES users
+);
