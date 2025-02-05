@@ -13,10 +13,16 @@ def index():
 def new_reservation():
     return render_template("new_reservation.html")
 @app.route("/create_reservation", methods=["POST"])
-def create():
+def create_reservation():
     amount = request.form["amount"]
     time = request.form["time"]
     cat = request.form["cat"]
+    user_id = session["user_id"]
+    sql = """INSERT INTO varaukset (amount, time, cat, user_id)
+            VALUES (?, ?, ?, ?)"""
+    db.execute(sql, [amount, time, cat, user_id])
+    return redirect("/")
+
 @app.route("/register")
 def register():
     return render_template("register.html")
