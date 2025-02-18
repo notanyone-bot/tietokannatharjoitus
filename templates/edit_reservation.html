@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Varauksen muokkaus</title>
+</head>
+
+<body>
+  <h1>Varauksen muokkamus</h1>
+  <form action="/update_reservation" method="post">
+    <p>
+      Nimi: <br />
+      <input type="text" name="name" value="{{ reservation.name }}" />
+    </p>
+    <p>
+      Henkilöiden määrä: <br />
+      <input type="text" name="amount" value="{{ reservation.amount }}" />
+    </p>
+    <p>
+      Aika: <br />
+      <input type="text" name="time" value="{{ reservation.time }}"/>
+    </p>
+    <p>
+      Toivottu kissa: <br />
+      <input type="text" name="cat" value="{{ reservation.cat }}"/>
+    </p>
+    <input type="hidden" name="reservation_id" value="{{ reservation.id }}" />
+    <input type="submit" value="Päivitä varaus" />
+  </form>
+</body>
+
+</html>

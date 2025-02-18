@@ -10,19 +10,40 @@ app = Flask(__name__)
 app.secret_key = config.secret_key
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_reservations = reservations.get_reservations()
+    return render_template("index.html", reservations=all_reservations)
+@app.route("/reservation/<int:reservation_id>")
+def show_reservation(reservation_id):
+    reservation = reservations.get_reservation(reservation_id)
+    return render_template("show_reservation.html", reservation=reservation)
+
 @app.route("/new_reservation")
 def new_reservation():
     return render_template("new_reservation.html")
 @app.route("/create_reservation", methods=["POST"])
 def create_reservation():
+    name = request.form["name"]
     amount = request.form["amount"]
     time = request.form["time"]
     cat = request.form["cat"]
     user_id = session["user_id"]
 
-    reservations.add_reservation(amount, time, cat, user_id)
+    reservations.add_reservation(name, amount, time, cat, user_id)
     return redirect("/")
+@app.route("/edit_reservation/<int:reservation_id>")
+def edit_reservation(reservation_id):
+    reservation = reservations.get_reservation(reservation_id)
+    return render_template("edit_reservation.html", reservation=reservation)
+
+@app.route("/update_reservation", methods=["POST"])
+def update_reservation():
+    reservation_id = request.form["reservation_id"]
+    name = request.form["name"]
+    amount = request.form["amount"]
+    time = request.form["time"]
+    cat = request.form["cat"]
+    reservations.update_reservation(reservation_id, name, amount, time, cat)
+    return redirect("/reservation/" + str(reservation_id))
 
 @app.route("/register")
 def register():

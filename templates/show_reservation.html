@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ reservation.name }}</title>
+</head>
+
+<body>
+    <h1>{{ reservation.name }}</h1>
+    {% if session.user_id ==  reservation.user_id%}
+    <p>
+      <a href="/edit_reservation/{{ reservation.id }}">Muokkaa varausta</a>
+    </p>
+    {% endif %}
+    <p>
+      Tulevien henkilöiden määrä: {{reservation.amount}}
+    </p>
+    <p>
+      Toivottu tuloaika: {{reservation.time}}
+    </p>
+    <p>
+      Toivottu kissa: {{reservation.cat}}
+    </p>
+    <p>
+      <a href="/">Takaisin</a>
+    </p>
+</body>
+
+</html>

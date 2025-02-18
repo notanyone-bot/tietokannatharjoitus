@@ -21,6 +21,12 @@
   <p>
     <a href="/new_reservation">Uusi varaus</a>
   </p>
+  <h2>Varaukset</h2>
+  <ul>
+  {% for reservation in reservations %}
+  <li><a href="/reservation/{{ reservation.id }}">{{ reservation.name }}</a></li>
+  {% endfor %}
+  </ul>
 </body>
 
 </html>

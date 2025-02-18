@@ -3,8 +3,9 @@ CREATE TABLE users (
     username TEXT UNIQUE,
     password_hash TEXT
 );
-CREATE TABLE varaukset (
+CREATE TABLE reservations (
     id INTEGER PRIMARY KEY,
+    name TEXT,
     amount TEXT,
     time INTEGER,
     cat TEXT,
