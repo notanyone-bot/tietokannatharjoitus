@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Varauksen poisto</title>
+</head>
+
+<body>
+  <h1>Varauksen poisto</h1>
+  <p>Varaus: {{ reservation.name }}</p>
+  <p>Haluatko varmasti poistaa tämän varauksen?</p>
+  <form action="/remove_reservation/{{ reservation.id }}" method="post">
+    <input type="submit" name="remove" value="Poista varaus">
+    <input type="submit" name="back" value="Palaa takaisin">
+    
+  </form>
+</body>
+
+</html>

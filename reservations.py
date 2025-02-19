@@ -27,3 +27,7 @@ def update_reservation(reservation_id, name, amount, time, cat):
                                      cat = ?
                                 WHERE id = ?"""
     db.execute(sql, [name, amount, time, cat, reservation_id])
+
+def remove_reservation(reservation_id):
+    sql = "DELETE FROM reservations WHERE id = ?"
+    db.execute(sql, [reservation_id])

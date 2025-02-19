@@ -45,6 +45,18 @@ def update_reservation():
     reservations.update_reservation(reservation_id, name, amount, time, cat)
     return redirect("/reservation/" + str(reservation_id))
 
+@app.route("/remove_reservation/<int:reservation_id>", methods=["GET", "POST"])
+def remove_reservation(reservation_id):
+    if request.method == "GET":
+        reservation = reservations.get_reservation(reservation_id)
+        return render_template("remove_reservation.html", reservation=reservation)
+    if request.method == "POST":
+        if "remove" in request.form:
+            reservations.remove_reservation(reservation_id)
+            return redirect("/")
+        else:
+            return redirect("/reservation/" + str(reservation_id))
+
 @app.route("/register")
 def register():
     return render_template("register.html")

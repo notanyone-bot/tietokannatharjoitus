@@ -10,12 +10,13 @@
     {% if session.user_id ==  reservation.user_id%}
     <p>
       <a href="/edit_reservation/{{ reservation.id }}">Muokkaa varausta</a>
+      <a href="/remove_reservation/{{ reservation.id }}">Poista varaus</a>
     </p>
     {% endif %}
     <p>
       Tulevien henkilöiden määrä: {{reservation.amount}}
     </p>
-    <p>
+    <p>a
       Toivottu tuloaika: {{reservation.time}}
     </p>
     <p>
