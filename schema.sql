@@ -6,8 +6,8 @@ CREATE TABLE users (
 CREATE TABLE reservations (
     id INTEGER PRIMARY KEY,
     name TEXT,
-    amount TEXT,
-    time INTEGER,
+    amount INTEGER,
+    time TEXT,
     cat TEXT,
     user_id INTEGER REFERENCES users
 );

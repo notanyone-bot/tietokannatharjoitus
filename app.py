@@ -5,6 +5,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import db
 import config
 import reservations
+import re
+import users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -17,6 +19,14 @@ def require_login():
 def index():
     all_reservations = reservations.get_reservations()
     return render_template("index.html", reservations=all_reservations)
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    reservations = users.get_reservations(user_id)
+    return render_template("show_user.html", user=user, reservations=reservations)
 
 @app.route("/find_reservation")
 def find_reservation():
@@ -43,9 +53,17 @@ def new_reservation():
 def create_reservation():
     require_login()
     name = request.form["name"]
+    if not name or len(name) > 30:
+        abort(403)
     amount = request.form["amount"]
+    if not amount or not re.search("^[0-9][0-9]{0,3}$", amount):
+        abort(403)
     time = request.form["time"]
+    if not time or len(time) > 10:
+        abort(403)
     cat = request.form["cat"]
+    if len(cat) > 20:
+        abort(403)
     user_id = session["user_id"]
 
     reservations.add_reservation(name, amount, time, cat, user_id)
@@ -70,9 +88,17 @@ def update_reservation():
     if reservation["user_id"] != session["user_id"]:
         abort(403)
     name = request.form["name"]
+    if not name or len(name) > 30:
+        abort(403)
     amount = request.form["amount"]
+    if not amount or not re.search("^[0-9][0-9]{0,3}$", amount):
+        abort(403)
     time = request.form["time"]
+    if not time or len(time) > 10:
+        abort(403)
     cat = request.form["cat"]
+    if len(cat) > 20:
+        abort(403)
     reservations.update_reservation(reservation_id, name, amount, time, cat)
     return redirect("/reservation/" + str(reservation_id))
 

@@ -16,11 +16,14 @@
     <p>
       Tulevien henkilöiden määrä: {{reservation.amount}}
     </p>
-    <p>a
+    <p>
       Toivottu tuloaika: {{reservation.time}}
     </p>
     <p>
       Toivottu kissa: {{reservation.cat}}
+    </p>
+    <p>
+      Varaaja: <a href="/user/{{ reservation.user_id}}">{{reservation.username}}</a>
     </p>
     <p>
       <a href="/">Takaisin</a>

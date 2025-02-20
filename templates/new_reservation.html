@@ -10,19 +10,19 @@
   <form action="/create_reservation" method="post">
     <p>
       Nimi: <br />
-      <input type="text" name="name" />
+      <input type="text" name="name" maxlength="30" required/>
     </p>
     <p>
       Henkilöiden määrä: <br />
-      <input type="text" name="amount" />
+      <input type="text" name="amount" maxlength="10" required pattern="[0-9][0-9]{0,3}"/>
     </p>
     <p>
       Aika: <br />
-      <input type="text" name="time" />
+      <input type="text" name="time" maxlength="10" required/>
     </p>
     <p>
       Toivottu kissa: <br />
-      <input type="text" name="cat" />
+      <input type="text" name="cat" maxlength="20"/>
     </p>
     <input type="submit" value="Vahvista varaus" />
   </form>
