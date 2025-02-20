@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import db
 import config
@@ -8,20 +8,40 @@ import reservations
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     all_reservations = reservations.get_reservations()
     return render_template("index.html", reservations=all_reservations)
+
+@app.route("/find_reservation")
+def find_reservation():
+    query = request.args.get("query")
+    if query:
+        results = reservations.find_reservations(query)
+    else:
+        query = ""
+        results = []
+    return render_template("find_reservation.html", query=query, results=results)
+
 @app.route("/reservation/<int:reservation_id>")
 def show_reservation(reservation_id):
     reservation = reservations.get_reservation(reservation_id)
+    if not reservation:
+        abort(404)
     return render_template("show_reservation.html", reservation=reservation)
 
 @app.route("/new_reservation")
 def new_reservation():
+    require_login()
     return render_template("new_reservation.html")
 @app.route("/create_reservation", methods=["POST"])
 def create_reservation():
+    require_login()
     name = request.form["name"]
     amount = request.form["amount"]
     time = request.form["time"]
@@ -32,12 +52,23 @@ def create_reservation():
     return redirect("/")
 @app.route("/edit_reservation/<int:reservation_id>")
 def edit_reservation(reservation_id):
+    require_login()
     reservation = reservations.get_reservation(reservation_id)
+    if not reservation:
+        abort(404)
+    if reservation["user_id"] != session["user_id"]:
+        abort(403)
     return render_template("edit_reservation.html", reservation=reservation)
 
 @app.route("/update_reservation", methods=["POST"])
 def update_reservation():
+    require_login()
     reservation_id = request.form["reservation_id"]
+    reservation = reservations.get_reservation(reservation_id)
+    if not reservation:
+        abort(404)
+    if reservation["user_id"] != session["user_id"]:
+        abort(403)
     name = request.form["name"]
     amount = request.form["amount"]
     time = request.form["time"]
@@ -47,8 +78,13 @@ def update_reservation():
 
 @app.route("/remove_reservation/<int:reservation_id>", methods=["GET", "POST"])
 def remove_reservation(reservation_id):
+    require_login()
+    reservation = reservations.get_reservation(reservation_id)
+    if not reservation:
+        abort(404)
+    if reservation["user_id"] != session["user_id"]:
+        abort(403)
     if request.method == "GET":
-        reservation = reservations.get_reservation(reservation_id)
         return render_template("remove_reservation.html", reservation=reservation)
     if request.method == "POST":
         if "remove" in request.form:
@@ -98,6 +134,7 @@ def login():
                 return "VIRHE: väärä tunnus tai salasana"
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
     return redirect("/")

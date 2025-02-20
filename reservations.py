@@ -19,7 +19,8 @@ def get_reservation(reservation_id):
              FROM reservations, users
              WHERE reservations.user_id = users.id AND
                    reservations.id = ?"""
-    return db.query(sql, [reservation_id])[0]
+    result = db.query(sql, [reservation_id])
+    return result[0] if result else None
 def update_reservation(reservation_id, name, amount, time, cat):
     sql = """UPDATE reservations SET name = ?,
                                      amount = ?,
@@ -31,3 +32,11 @@ def update_reservation(reservation_id, name, amount, time, cat):
 def remove_reservation(reservation_id):
     sql = "DELETE FROM reservations WHERE id = ?"
     db.execute(sql, [reservation_id])
+
+def find_reservations(query):
+    sql = """SELECT id, name
+                FROM reservations
+                WHERE name LIKE ? OR cat LIKE ?
+                ORDER BY id DESC"""
+    like = "%" + query + "%"
+    return db.query(sql, [like, like])
