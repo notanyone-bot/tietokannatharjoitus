@@ -66,11 +66,16 @@ def create_reservation():
     if len(cat) > 20:
         abort(403)
     user_id = session["user_id"]
+    all_classes = reservations.get_all_classes()
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
-            parts = entry.split(":")
-            classes.append((parts[0], parts[1]))
+            class_name, class_value = entry.split(":")
+            if class_name not in all_classes:
+                abort(403)
+            if class_value not in all_classes[class_name]:
+                abort(403)
+            classes.append((class_name, class_value))
 
     reservations.add_reservation(name, amount, time, cat, user_id, classes)
     return redirect("/")
@@ -82,7 +87,14 @@ def edit_reservation(reservation_id):
         abort(404)
     if reservation["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit_reservation.html", reservation=reservation)
+    all_classes = reservations.get_all_classes()
+    classes = {}
+    for my_class in all_classes:
+        classes[my_class] = ""
+    for entry in reservations.get_classes(reservation_id):
+        classes[entry["name"]] = entry["value"]
+
+    return render_template("edit_reservation.html", reservation=reservation, classes=classes, all_classes=all_classes)
 
 @app.route("/update_reservation", methods=["POST"])
 def update_reservation():
@@ -105,7 +117,18 @@ def update_reservation():
     cat = request.form["cat"]
     if len(cat) > 20:
         abort(403)
-    reservations.update_reservation(reservation_id, name, amount, time, cat)
+    all_classes = reservations.get_all_classes()
+    classes = []
+    for entry in request.form.getlist("classes"):
+        if entry:
+            class_name, class_value = entry.split(":")
+            if class_name[0] not in all_classes:
+                abort(403)
+            if class_value not in all_classes[class_name]:
+                abort(403)
+            classes.append((class_name, class_value))
+
+    reservations.update_reservation(reservation_id, name, amount, time, cat, classes)
     return redirect("/reservation/" + str(reservation_id))
 
 @app.route("/remove_reservation/<int:reservation_id>", methods=["GET", "POST"])
