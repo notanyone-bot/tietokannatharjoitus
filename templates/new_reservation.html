@@ -24,6 +24,17 @@
       Toivottu kissa: <br />
       <input type="text" name="cat" maxlength="20"/>
     </p>
+    {% for class in classes %}
+    <p>
+    {{ class }}: <br />
+    <select name="classes">
+      <option value="">(valitse)</option>
+      {% for option in classes[class] %}
+      <option value="{{ class }}: {{ option }}">{{ option }}</option>
+      {% endfor %}
+    </select>
+    </p>
+    {% endfor %}
     <input type="submit" value="Vahvista varaus" />
   </form>
 </body>

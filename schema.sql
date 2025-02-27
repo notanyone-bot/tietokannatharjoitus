@@ -11,3 +11,10 @@ CREATE TABLE reservations (
     cat TEXT,
     user_id INTEGER REFERENCES users
 );
+
+CREATE TABLE reservation_classes (
+    id INTEGER PRIMARY KEY,
+    reservation_id INTEGER REFERENCES reservations,
+    name TEXT,
+    value TEXT
+);

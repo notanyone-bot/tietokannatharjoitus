@@ -25,6 +25,16 @@
     <p>
       Varaaja: <a href="/user/{{ reservation.user_id}}">{{reservation.username}}</a>
     </p>
+    {% if classes %}
+    <p>
+      Luokat:
+      <ul>
+        {% for class in classes %}
+        <li>{{ class.name }}: {{ class.value }}</li>
+        {% endfor %}
+      </ul>
+    </p>
+    {% endif %}
     <p>
       <a href="/">Takaisin</a>
     </p>
