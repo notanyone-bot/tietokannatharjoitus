@@ -71,6 +71,7 @@ def create_reservation():
     for entry in request.form.getlist("classes"):
         if entry:
             class_name, class_value = entry.split(":")
+            class_value = class_value.strip()
             if class_name not in all_classes:
                 abort(403)
             if class_value not in all_classes[class_name]:
@@ -122,7 +123,8 @@ def update_reservation():
     for entry in request.form.getlist("classes"):
         if entry:
             class_name, class_value = entry.split(":")
-            if class_name[0] not in all_classes:
+            class_value = class_value.strip()
+            if class_name not in all_classes:
                 abort(403)
             if class_value not in all_classes[class_name]:
                 abort(403)
