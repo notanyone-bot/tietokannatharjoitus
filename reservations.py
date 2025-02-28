@@ -21,6 +21,18 @@ def add_reservation(name, amount, time, cat, user_id, classes):
     for name, value in classes:
         db.execute(sql, [reservation_id, name, value])
 
+def add_comment(reservation_id, user_id, comment):
+    sql = """INSERT INTO comments (reservation_id, user_id, comment)
+            VALUES (?, ?, ?)"""
+    db.execute(sql, [reservation_id, user_id, comment])
+
+def get_comments(reservation_id):
+    sql = """SELECT comments.comment, users.id user_id, users.username
+                FROM comments, users
+                WHERE comments.reservation_id = ? AND comments.user_id = users.id
+                ORDER BY comments.id DESC"""
+    return db.query(sql, [reservation_id])
+
 def get_classes(reservation_id):
     sql = "SELECT name, value FROM reservation_classes WHERE reservation_id = ?"
     return db.query(sql, [reservation_id])

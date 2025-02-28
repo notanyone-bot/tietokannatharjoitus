@@ -35,6 +35,19 @@
       </ul>
     </p>
     {% endif %}
+    <h2>Kommentit</h2>
+    <ul>
+      {% for comment in comments %}
+      <li>{{ comment.comment }}, <a href="/user/{{ comment.user_id }}">{{comment.username}}</a></li>
+      {% endfor %}
+    </ul>
+    <h2>Uusi kommentti</h2>
+    <form action="/create_comment" method="post">
+      Kommentti: <br />
+      <textarea name="comment" rows="4" cols="50" maxlength="100" required></textarea> <br /> <br />
+      <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+      <input type="submit" value="Lisää kommentti" />
+    </form>
     <p>
       <a href="/">Takaisin</a>
     </p>

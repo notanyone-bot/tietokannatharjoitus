@@ -43,13 +43,15 @@ def show_reservation(reservation_id):
     if not reservation:
         abort(404)
     classes = reservations.get_classes(reservation_id)
-    return render_template("show_reservation.html", reservation=reservation, classes=classes)
+    comments = reservations.get_comments(reservation_id)
+    return render_template("show_reservation.html", reservation=reservation, classes=classes, comments=comments)
 
 @app.route("/new_reservation")
 def new_reservation():
     require_login()
     classes = reservations.get_all_classes()
     return render_template("new_reservation.html", classes=classes)
+
 @app.route("/create_reservation", methods=["POST"])
 def create_reservation():
     require_login()
@@ -80,6 +82,21 @@ def create_reservation():
 
     reservations.add_reservation(name, amount, time, cat, user_id, classes)
     return redirect("/")
+
+@app.route("/create_comment", methods=["POST"])
+def create_comment():
+    require_login()
+    comment = request.form["comment"]
+    if not comment or len(comment) > 100:
+        abort(403)
+    reservation_id = request.form["reservation_id"]
+    reservation = reservations.get_reservation(reservation_id)
+    if not reservation:
+        abort(403)
+    user_id = session["user_id"]
+    reservations.add_comment(reservation_id, user_id, comment)
+    return redirect("/reservation/" + str(reservation_id))
+
 @app.route("/edit_reservation/<int:reservation_id>")
 def edit_reservation(reservation_id):
     require_login()
